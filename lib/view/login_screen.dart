@@ -6,6 +6,7 @@ import 'package:bayduri_app/view/bottom_nav_bar_owner.dart';
 import 'package:flutter/material.dart';
 import 'package:bayduri_app/utils/my_color.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,6 +23,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final RoundedLoadingButtonController _btnLogin =
       RoundedLoadingButtonController();
   String? _errorMessageApi;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,14 +191,15 @@ class _LoginScreenState extends State<LoginScreen> {
           final pengguna = Pengguna.fromJson(penggunaJson);
 
           // Simpan data pengguna ke SharedPreferences
-          // SharedPreferences prefuser = await SharedPreferences.getInstance();
-          // await prefuser.setString('id_pengguna', pengguna.idPengguna);
-          // await prefuser.setString('id_jabatan', pengguna.idJabatan);
-          // await prefuser.setString('nama_pengguna', pengguna.namaPengguna);
-          // await prefuser.setString('nomor_pengguna', pengguna.nomorPengguna);
-          // await prefuser.setString('gambar_pengguna', pengguna.gambarPengguna);
-          // await prefuser.setString('username', pengguna.username);
-          // await prefuser.setString('password', pengguna.password);
+          SharedPreferences prefuser = await SharedPreferences.getInstance();
+          await prefuser.setString('id_pengguna', pengguna.idPengguna);
+          await prefuser.setString('id_jabatan', pengguna.idJabatan);
+          await prefuser.setString('nama_pengguna', pengguna.namaPengguna);
+          await prefuser.setString('nomor_pengguna', pengguna.nomorPengguna);
+          await prefuser.setString('gambar_pengguna', pengguna.gambarPengguna);
+          await prefuser.setString('username', pengguna.username);
+          await prefuser.setString('password', pengguna.password);
+          await prefuser.setBool('isloggedin', true);
 
           if (!mounted) return;
 
@@ -199,7 +207,8 @@ class _LoginScreenState extends State<LoginScreen> {
           controller.success();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('Login successful: ${pengguna.namaPengguna}')),
+                content: Text(
+                    'Login successful: ${prefuser.getString('nama_pengguna')}')),
           );
 
           // Navigasi ke halaman berikutnya jika diperlukan
@@ -226,5 +235,18 @@ class _LoginScreenState extends State<LoginScreen> {
         controller.reset();
       }
     });
+  }
+
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefuser = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefuser.getBool('isloggedin') ?? false;
+
+    if (isLoggedIn) {
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NavbarOwner()),
+      );
+    }
   }
 }
