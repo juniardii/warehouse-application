@@ -5,7 +5,6 @@ import 'package:bayduri_app/view/riwayat/riwayat_ui.dart';
 import 'package:bayduri_app/view/settings/settings_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NavbarOwner extends StatefulWidget {
   const NavbarOwner({super.key});
@@ -26,21 +25,20 @@ class _NavbarOwnerState extends State<NavbarOwner> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _testing();
+    // _testing();
   }
 
-  Future<void> _testing() async {
-    SharedPreferences prefuser = await SharedPreferences.getInstance();
-    print('${prefuser.getString('id_pengguna')}');
-    print('${prefuser.getString('id_jabatan')}');
-    print('${prefuser.getString('nama_pengguna')}');
-    print('${prefuser.getString('nomor_pengguna')}');
-    print('${prefuser.getString('gambar_pengguna')}');
-    print('${prefuser.getString('username')}');
-    print('${prefuser.getString('password')}');
-  }
+  // Future<void> _testing() async {
+  //   SharedPreferences prefuser = await SharedPreferences.getInstance();
+  //   print('${prefuser.getString('id_pengguna')}');
+  //   print('${prefuser.getString('id_jabatan')}');
+  //   print('${prefuser.getString('nama_pengguna')}');
+  //   print('${prefuser.getString('nomor_pengguna')}');
+  //   print('${prefuser.getString('gambar_pengguna')}');
+  //   print('${prefuser.getString('username')}');
+  //   print('${prefuser.getString('password')}');
+  // }
 
   @override
   Widget build(BuildContext context) {

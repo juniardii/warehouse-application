@@ -40,181 +40,193 @@ class _AddprodukUiState extends ConsumerState<AddProdukUi> {
     final kategoriListAsync = ref.watch(kategoriListProvider);
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          'Tambah Produk',
-          style: TextStyle(color: Colors.white),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
+        if (didPop || _btnSubmit.currentState == ButtonState.loading) {
+          return;
+        }
+        if (context.mounted && _btnSubmit.currentState != ButtonState.loading) {
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text(
+            'Tambah Produk',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: MyColor.bgColor,
         ),
-        backgroundColor: MyColor.bgColor,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(4.0, 10.0, 4.0, 4.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: Container(
-                  height: screenHeight / 4,
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.grey)),
-                  child: _image == null
-                      ? const Center(
-                          child: Text(
-                              'Tidak ada foto!\n klik jika ingin menambahkan foto'))
-                      : Image.file(
-                          _image!,
-                          fit: BoxFit.cover,
-                        ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _namaPcontroller,
-                decoration: InputDecoration(
-                  labelText: 'Nama Produk',
-                  errorText: _errorMessage,
-                  border: border(),
-                  // Tampilkan pesan error di sini
-                ),
-                maxLength: 50,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nama Produk tidak boleh kosong';
-                  } else if (value.length < 3) {
-                    return 'Nama Produk minimal 3 karakter';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _deskripsiPcontroller,
-                decoration: InputDecoration(
-                  labelText: 'Deskripsi Produk',
-                  errorText: _errorMessage,
-                  border: border(),
-                  // Tampilkan pesan error di sini
-                ),
-                maxLength: 255,
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Deskripsi Produk tidak boleh kosong';
-                  } else if (value.length < 3) {
-                    return 'Deskripsi Produk minimal 3 karakter';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _hargaPcontroller,
-                decoration: InputDecoration(
-                  labelText: 'Harga Produk',
-                  hintText: 'Rp :',
-                  errorText: _errorMessage,
-                  border: border(),
-                  // Tampilkan pesan error di sini
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Harga Produk tidak boleh kosong';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _stokPcontroller,
-                decoration: InputDecoration(
-                  labelText: 'Stok Produk',
-                  errorText: _errorMessage,
-                  border: border(),
-                  // Tampilkan pesan error di sini
-                ),
-                keyboardType: TextInputType.number, // Mengatur keyboard number
-                inputFormatters: [
-                  FilteringTextInputFormatter
-                      .digitsOnly, // Membatasi input angka
-                ],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Stok Produk tidak boleh kosong';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.only(left: 10.0),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: _dropdownErrorMessage == null
-                        ? Colors.grey
-                        : Colors.red,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    kategoriListAsync.when(
-                      data: (data) {
-                        return DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            hint: const Text("Pilih Kategori"),
-                            value: valueChoose,
-                            isExpanded:
-                                true, // Agar Dropdown menyesuaikan lebar layar
-                            onChanged: (newValue) {
-                              setState(() {
-                                valueChoose = newValue;
-                                _dropdownErrorMessage = null;
-                              });
-                            },
-                            items: data.map((Kategori kategori) {
-                              return DropdownMenuItem<String>(
-                                value: kategori.idK,
-                                child: Text(kategori.namaK),
-                              );
-                            }).toList(),
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(4.0, 10.0, 4.0, 4.0),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    height: screenHeight / 4,
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.grey)),
+                    child: _image == null
+                        ? const Center(
+                            child: Text(
+                                'Tidak ada foto!\n klik jika ingin menambahkan foto'))
+                        : Image.file(
+                            _image!,
+                            fit: BoxFit.cover,
                           ),
-                        );
-                      },
-                      error: (err, stack) => Text(
-                          'Error: $err'), // Menampilkan error jika ada masalah
-                      loading: () => const CircularProgressIndicator(),
-                    ),
-                    if (_dropdownErrorMessage != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          _dropdownErrorMessage!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _namaPcontroller,
+                  decoration: InputDecoration(
+                    labelText: 'Nama Produk',
+                    errorText: _errorMessage,
+                    border: border(),
+                    // Tampilkan pesan error di sini
+                  ),
+                  maxLength: 50,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nama Produk tidak boleh kosong';
+                    } else if (value.length < 3) {
+                      return 'Nama Produk minimal 3 karakter';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _deskripsiPcontroller,
+                  decoration: InputDecoration(
+                    labelText: 'Deskripsi Produk',
+                    errorText: _errorMessage,
+                    border: border(),
+                    // Tampilkan pesan error di sini
+                  ),
+                  maxLength: 255,
+                  maxLines: 5,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Deskripsi Produk tidak boleh kosong';
+                    } else if (value.length < 3) {
+                      return 'Deskripsi Produk minimal 3 karakter';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _hargaPcontroller,
+                  decoration: InputDecoration(
+                    labelText: 'Harga Produk',
+                    hintText: 'Rp :',
+                    errorText: _errorMessage,
+                    border: border(),
+                    // Tampilkan pesan error di sini
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Harga Produk tidak boleh kosong';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              const SizedBox(height: 15),
-              RoundedLoadingButton(
-                controller: _btnSubmit,
-                onPressed: () => _validation(_btnSubmit),
-                color: MyColor.bgColor,
-                child: const Text(
-                  'Submit',
-                  style: TextStyle(color: Colors.white),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _stokPcontroller,
+                  decoration: InputDecoration(
+                    labelText: 'Stok Produk',
+                    errorText: _errorMessage,
+                    border: border(),
+                    // Tampilkan pesan error di sini
+                  ),
+                  keyboardType:
+                      TextInputType.number, // Mengatur keyboard number
+                  inputFormatters: [
+                    FilteringTextInputFormatter
+                        .digitsOnly, // Membatasi input angka
+                  ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Stok Produk tidak boleh kosong';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-            ]),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _dropdownErrorMessage == null
+                          ? Colors.grey
+                          : Colors.red,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      kategoriListAsync.when(
+                        data: (data) {
+                          return DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: const Text("Pilih Kategori"),
+                              value: valueChoose,
+                              isExpanded:
+                                  true, // Agar Dropdown menyesuaikan lebar layar
+                              onChanged: (newValue) {
+                                setState(() {
+                                  valueChoose = newValue;
+                                  _dropdownErrorMessage = null;
+                                });
+                              },
+                              items: data.map((Kategori kategori) {
+                                return DropdownMenuItem<String>(
+                                  value: kategori.idK,
+                                  child: Text(kategori.namaK),
+                                );
+                              }).toList(),
+                            ),
+                          );
+                        },
+                        error: (err, stack) => Text(
+                            'Error: $err'), // Menampilkan error jika ada masalah
+                        loading: () => const CircularProgressIndicator(),
+                      ),
+                      if (_dropdownErrorMessage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            _dropdownErrorMessage!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 15),
+                RoundedLoadingButton(
+                  controller: _btnSubmit,
+                  onPressed: () => _validation(_btnSubmit),
+                  color: MyColor.bgColor,
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ]),
+            ),
           ),
         ),
       ),

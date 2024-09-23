@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bayduri_app/model/kategori/kategori.dart';
 import 'package:bayduri_app/riverpod/kategori/kategori_provider.dart';
 import 'package:flutter/material.dart';
@@ -21,45 +23,58 @@ class _AddKategoriDialogState extends ConsumerState<AddKategoriDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Tambah Kategori'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _kategoriController,
-              decoration: InputDecoration(
-                labelText: 'Nama Kategori',
-                errorText: _errorMessage, // Tampilkan pesan error di sini
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
+        if (didPop || _isSubmitting) {
+          return;
+        }
+        if (context.mounted && _isSubmitting == false) {
+          Navigator.pop(context);
+        }
+      },
+      child: AlertDialog(
+        title: const Text('Tambah Kategori'),
+        content: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _kategoriController,
+                decoration: InputDecoration(
+                  labelText: 'Nama Kategori',
+                  errorText: _errorMessage, // Tampilkan pesan error di sini
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Nama kategori tidak boleh kosong';
+                  } else if (value.length < 3) {
+                    return 'Nama kategori minimal 3 karakter';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Nama kategori tidak boleh kosong';
-                } else if (value.length < 3) {
-                  return 'Nama kategori minimal 3 karakter';
-                }
-                return null;
-              },
-            ),
-          ],
+            ],
+          ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Tutup dialog tanpa menyimpan
+            },
+            child: _isSubmitting
+                ? const CircularProgressIndicator()
+                : const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: _isSubmitting ? null : _submit,
+            child: _isSubmitting
+                ? const CircularProgressIndicator()
+                : const Text('Submit'),
+          )
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Tutup dialog tanpa menyimpan
-          },
-          child: const Text('Batal'),
-        ),
-        TextButton(
-          onPressed: _isSubmitting ? null : _submit,
-          child: _isSubmitting
-              ? const CircularProgressIndicator()
-              : const Text('Submit'),
-        )
-      ],
     );
   }
 
@@ -82,12 +97,7 @@ class _AddKategoriDialogState extends ConsumerState<AddKategoriDialog> {
 
         if (!mounted) return;
 
-        if (responseData != 'Kategori berhasil ditambahkan') {
-          setState(() {
-            _errorMessage = responseData; // Simpan pesan error
-            _isSubmitting = false;
-          });
-        } else if (responseData == 'Kategori berhasil ditambahkan') {
+        if (responseData == 'Kategori berhasil ditambahkan') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Kategori berhasil ditambahkan'),
@@ -95,17 +105,13 @@ class _AddKategoriDialogState extends ConsumerState<AddKategoriDialog> {
             ),
           );
 
-          // Tunggu beberapa detik sebelum menutup dialog
-          await Future.delayed(const Duration(seconds: 2));
-
           if (mounted) {
             widget.onSuccess(); // Panggil callback setelah berhasil
             Navigator.of(context).pop(); // Tutup dialog setelah berhasil
           }
         } else {
-          // Tampilkan pesan error lain
           setState(() {
-            _errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+            _errorMessage = responseData; // Simpan pesan error
             _isSubmitting = false;
           });
         }

@@ -177,6 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _validation(RoundedLoadingButtonController controller) async {
+    FocusScope.of(context).unfocus();
     if (_formValidasi.currentState?.validate() ?? false) {
       final username = _usernameController.text;
       final password = _passwordController.text;
@@ -205,17 +206,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // Tampilkan pesan sukses
           controller.success();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(
-                    'Login successful: ${prefuser.getString('nama_pengguna')}')),
-          );
+          Timer(const Duration(seconds: 2), () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(
+                      'Login successful: ${prefuser.getString('nama_pengguna')}')),
+            );
 
-          // Navigasi ke halaman berikutnya jika diperlukan
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const NavbarOwner()),
-          );
+            // Navigasi ke halaman berikutnya jika diperlukan
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const NavbarOwner()),
+            );
+          });
         } else {
           setState(() {
             controller.error();

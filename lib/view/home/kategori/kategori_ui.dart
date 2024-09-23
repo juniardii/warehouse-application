@@ -33,6 +33,8 @@ class KategoriUi extends ConsumerWidget {
                 onTap: () {
                   showDialog(
                     context: context,
+                    barrierDismissible:
+                        false, // Tambahkan ini agar tidak bisa di-dismiss
                     builder: (context) {
                       return PutKategoriDialog(
                         kategori: kategori,
@@ -83,6 +85,8 @@ class KategoriUi extends ConsumerWidget {
         onPressed: () {
           showDialog(
             context: context,
+            barrierDismissible:
+                false, // Tambahkan ini agar tidak bisa di-dismiss
             builder: (context) {
               return AddKategoriDialog(
                 onSuccess: () {

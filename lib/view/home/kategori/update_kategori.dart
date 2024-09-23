@@ -31,49 +31,62 @@ class _PutKategoriDialogState extends ConsumerState<PutKategoriDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Ubah Kategori'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _namaKategori,
-              decoration: InputDecoration(
-                labelText: 'Nama Kategori',
-                errorText: _errorMessage,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) async {
+        if (didPop || _isSubmitting) {
+          return;
+        }
+        if (context.mounted && _isSubmitting == false) {
+          Navigator.pop(context);
+        }
+      },
+      child: AlertDialog(
+        title: const Text('Ubah Kategori'),
+        content: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _namaKategori,
+                decoration: InputDecoration(
+                  labelText: 'Nama Kategori',
+                  errorText: _errorMessage,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Nama Kategori Tidak Boleh Kosong';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Nama Kategori Tidak Boleh Kosong';
-                }
-                return null;
-              },
-            ),
-          ],
+            ],
+          ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: _isSubmitting
+                ? const CircularProgressIndicator()
+                : const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: _isSubmitting ? null : _delete,
+            child: _isSubmitting
+                ? const CircularProgressIndicator()
+                : const Text('Hapus'),
+          ),
+          TextButton(
+            onPressed: _isSubmitting ? null : _submit,
+            child: _isSubmitting
+                ? const CircularProgressIndicator()
+                : const Text('Ubah'),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: _isSubmitting ? null : _delete,
-          child: _isSubmitting
-              ? const CircularProgressIndicator()
-              : const Text('Hapus'),
-        ),
-        TextButton(
-          onPressed: _isSubmitting ? null : _submit,
-          child: _isSubmitting
-              ? const CircularProgressIndicator()
-              : const Text('Ubah'),
-        ),
-      ],
     );
   }
 
@@ -104,8 +117,6 @@ class _PutKategoriDialogState extends ConsumerState<PutKategoriDialog> {
               duration: Duration(seconds: 2),
             ),
           );
-
-          await Future.delayed(const Duration(seconds: 2));
           if (mounted) {
             widget.onSuccess();
             Navigator.of(context).pop();
@@ -148,7 +159,6 @@ class _PutKategoriDialogState extends ConsumerState<PutKategoriDialog> {
             duration: Duration(seconds: 2),
           ),
         );
-        await Future.delayed(const Duration(seconds: 2));
         if (mounted) {
           widget.onSuccess();
           Navigator.of(context).pop();
