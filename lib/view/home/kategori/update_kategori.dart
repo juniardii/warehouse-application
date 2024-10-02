@@ -53,6 +53,12 @@ class _PutKategoriDialogState extends ConsumerState<PutKategoriDialog> {
                 decoration: InputDecoration(
                   labelText: 'Nama Kategori',
                   errorText: _errorMessage,
+                  border: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue),
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {

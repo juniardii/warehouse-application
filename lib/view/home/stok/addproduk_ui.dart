@@ -146,6 +146,7 @@ class _AddprodukUiState extends ConsumerState<AddProdukUi> {
                   controller: _stokPcontroller,
                   decoration: InputDecoration(
                     labelText: 'Stok Produk',
+                    hintText: 'Dus :',
                     errorText: _errorMessage,
                     border: border(),
                     // Tampilkan pesan error di sini

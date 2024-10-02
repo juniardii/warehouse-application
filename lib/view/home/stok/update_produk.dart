@@ -320,7 +320,7 @@ class _UpdateProdukUiState extends ConsumerState<UpdateProdukUi> {
           if (responseData == 'Produk berhasil diupdate') {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Kategori Berhasil DiUbah'),
+                content: Text('Produk Berhasil DiUbah'),
                 duration: Duration(seconds: 2),
               ),
             );
