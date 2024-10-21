@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bayduri_app/model/produk/produk.dart';
-import 'package:bayduri_app/model/server.dart';
+import 'package:bayduri_app/server.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
 

@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final screenHeight = mediaQuery.size.height;
-    final screenwidth = mediaQuery.size.width;
+    final screenWidth = mediaQuery.size.width;
 
     return GestureDetector(
       onTap: () {
@@ -46,21 +46,24 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               Container(
                 height: screenHeight,
-                width: screenwidth,
+                width: screenWidth,
                 decoration: const BoxDecoration(gradient: MyColor.myGradient),
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 60.0, left: 22.0),
+                    padding: EdgeInsets.only(
+                      top: screenHeight * 0.08,
+                      left: screenWidth * 0.06,
+                    ),
                     child: Image.asset(
                       'assets/logo_bayduri_nobg.png',
-                      height: 100,
+                      height: screenHeight * 0.1,
                     ),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 180.0),
+                padding: EdgeInsets.only(top: screenHeight * 0.22),
                 child: Container(
                   decoration: const BoxDecoration(
                     borderRadius:
@@ -68,17 +71,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.white,
                   ),
                   height: screenHeight,
-                  width: screenwidth,
+                  width: screenWidth,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                     child: Form(
                       key: _formValidasi,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          const SizedBox(
-                            height: 60,
+                          SizedBox(
+                            height: screenHeight * 0.08,
                           ),
                           const Text(
                             'LOGIN',
@@ -89,64 +93,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontFamily: 'Times New Roman',
                             ),
                           ),
-                          const SizedBox(
-                            height: 80,
+                          SizedBox(
+                            height: screenHeight * 0.05,
                           ),
-                          TextFormField(
-                            keyboardType: TextInputType.name,
-                            controller: _usernameController,
-                            decoration: const InputDecoration(
-                              labelText: "Username",
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.person_rounded),
-                            ),
-                            validator: (value) {
-                              bool usernamevalid =
-                                  RegExp(r"^[a-zA-Z0-9]+$").hasMatch(value!);
-                              if (value.isEmpty) {
-                                return "Masukkan Username";
-                              } else if (!usernamevalid) {
-                                return "Username tidak boleh mengandung karakter khusus";
-                              } else if (_usernameController.text.length < 6) {
-                                return "tidak kurang dari 6 karakter";
-                              }
-                              return null;
-                            },
+                          _buildUsernameField(),
+                          SizedBox(
+                            height: screenHeight * 0.02,
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            keyboardType: TextInputType.name,
-                            controller: _passwordController,
-                            obscureText: passToggle,
-                            decoration: InputDecoration(
-                              labelText: "Password",
-                              border: const OutlineInputBorder(),
-                              prefixIcon:
-                                  const Icon(Icons.lock_outline_rounded),
-                              suffixIcon: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    passToggle = !passToggle;
-                                  });
-                                },
-                                child: Icon(passToggle
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return "Masukkan Password";
-                              } else if (_passwordController.text.length < 6) {
-                                return "Password Minimal 6 karakter";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(
-                            height: 40,
+                          _buildPasswordField(),
+                          SizedBox(
+                            height: screenHeight * 0.04,
                           ),
                           if (_errorMessageApi != null)
                             Text(
@@ -176,6 +132,58 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget _buildUsernameField() {
+    return TextFormField(
+      keyboardType: TextInputType.name,
+      controller: _usernameController,
+      decoration: const InputDecoration(
+        labelText: "Username",
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.person_rounded),
+      ),
+      validator: (value) {
+        bool usernamevalid = RegExp(r"^[a-zA-Z0-9]+$").hasMatch(value!);
+        if (value.isEmpty) {
+          return "Masukkan Username";
+        } else if (!usernamevalid) {
+          return "Username tidak boleh mengandung karakter khusus";
+        } else if (_usernameController.text.length < 6) {
+          return "tidak kurang dari 6 karakter";
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return TextFormField(
+      keyboardType: TextInputType.name,
+      controller: _passwordController,
+      obscureText: passToggle,
+      decoration: InputDecoration(
+        labelText: "Password",
+        border: const OutlineInputBorder(),
+        prefixIcon: const Icon(Icons.lock_outline_rounded),
+        suffixIcon: InkWell(
+          onTap: () {
+            setState(() {
+              passToggle = !passToggle;
+            });
+          },
+          child: Icon(passToggle ? Icons.visibility : Icons.visibility_off),
+        ),
+      ),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "Masukkan Password";
+        } else if (_passwordController.text.length < 6) {
+          return "Password Minimal 6 karakter";
+        }
+        return null;
+      },
+    );
+  }
+
   Future<void> _validation(RoundedLoadingButtonController controller) async {
     FocusScope.of(context).unfocus();
     if (_formValidasi.currentState?.validate() ?? false) {
@@ -187,6 +195,9 @@ class _LoginScreenState extends State<LoginScreen> {
         final response = await loginCon.login(username, password);
 
         if (response['status'] == 'sukses') {
+          setState(() {
+            _errorMessageApi = null;
+          });
           // Ambil data pengguna
           final penggunaJson = response['data'][0];
           final pengguna = Pengguna.fromJson(penggunaJson);

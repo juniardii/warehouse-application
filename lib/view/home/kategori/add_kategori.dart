@@ -33,47 +33,64 @@ class _AddKategoriDialogState extends ConsumerState<AddKategoriDialog> {
           Navigator.pop(context);
         }
       },
-      child: AlertDialog(
-        title: const Text('Tambah Kategori'),
-        content: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _kategoriController,
-                decoration: InputDecoration(
-                  labelText: 'Nama Kategori',
-                  errorText: _errorMessage, // Tampilkan pesan error di sini
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        behavior: HitTestBehavior.opaque,
+        child: AlertDialog(
+          title: const Text('Tambah Kategori'),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Nama Kategori",
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.left,
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nama kategori tidak boleh kosong';
-                  } else if (value.length < 3) {
-                    return 'Nama kategori minimal 3 karakter';
-                  }
-                  return null;
-                },
-              ),
-            ],
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.15),
+                  ),
+                  child: TextFormField(
+                    controller: _kategoriController,
+                    decoration: InputDecoration(
+                      errorText: _errorMessage, // Tampilkan pesan error di sini
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Nama kategori tidak boleh kosong';
+                      } else if (value.length < 3) {
+                        return 'Nama kategori minimal 3 karakter';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Tutup dialog tanpa menyimpan
+              },
+              child: _isSubmitting
+                  ? const CircularProgressIndicator()
+                  : const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: _isSubmitting ? null : _submit,
+              child: _isSubmitting
+                  ? const CircularProgressIndicator()
+                  : const Text('Submit'),
+            )
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Tutup dialog tanpa menyimpan
-            },
-            child: _isSubmitting
-                ? const CircularProgressIndicator()
-                : const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: _isSubmitting ? null : _submit,
-            child: _isSubmitting
-                ? const CircularProgressIndicator()
-                : const Text('Submit'),
-          )
-        ],
       ),
     );
   }

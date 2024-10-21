@@ -41,57 +41,74 @@ class _PutKategoriDialogState extends ConsumerState<PutKategoriDialog> {
           Navigator.pop(context);
         }
       },
-      child: AlertDialog(
-        title: const Text('Ubah Kategori'),
-        content: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _namaKategori,
-                decoration: InputDecoration(
-                  labelText: 'Nama Kategori',
-                  errorText: _errorMessage,
-                  border: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        behavior: HitTestBehavior.opaque,
+        child: AlertDialog(
+          title: const Text('Ubah Kategori'),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Nama Kategori",
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.left,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.15),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue),
+                  child: TextFormField(
+                    controller: _namaKategori,
+                    decoration: InputDecoration(
+                      errorText: _errorMessage,
+                      border: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Nama Kategori Tidak Boleh Kosong';
+                      }
+                      return null;
+                    },
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Nama Kategori Tidak Boleh Kosong';
-                  }
-                  return null;
-                },
-              ),
-            ],
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: _isSubmitting
+                  ? const CircularProgressIndicator()
+                  : const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: _isSubmitting ? null : _delete,
+              child: _isSubmitting
+                  ? const CircularProgressIndicator()
+                  : const Text('Hapus'),
+            ),
+            TextButton(
+              onPressed: _isSubmitting ? null : _submit,
+              child: _isSubmitting
+                  ? const CircularProgressIndicator()
+                  : const Text('Ubah'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: _isSubmitting
-                ? const CircularProgressIndicator()
-                : const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: _isSubmitting ? null : _delete,
-            child: _isSubmitting
-                ? const CircularProgressIndicator()
-                : const Text('Hapus'),
-          ),
-          TextButton(
-            onPressed: _isSubmitting ? null : _submit,
-            child: _isSubmitting
-                ? const CircularProgressIndicator()
-                : const Text('Ubah'),
-          ),
-        ],
       ),
     );
   }

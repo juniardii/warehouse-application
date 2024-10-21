@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bayduri_app/model/server.dart';
+import 'package:bayduri_app/server.dart';
 import 'package:bayduri_app/utils/my_color.dart';
 import 'package:bayduri_app/view/login_screen.dart';
 import 'package:flutter/material.dart';

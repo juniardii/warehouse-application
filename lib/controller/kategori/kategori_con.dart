@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:bayduri_app/model/kategori/kategori.dart';
-import 'package:bayduri_app/model/server.dart';
+import 'package:bayduri_app/server.dart';
 import 'package:dio/dio.dart';
 
 class KategoriCon {

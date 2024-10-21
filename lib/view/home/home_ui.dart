@@ -9,122 +9,89 @@ class HomeUi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Home',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: MyColor.bgColor,
+      appBar: AppBar(
+        title: const Text(
+          'Home',
+          style: TextStyle(color: Colors.white),
         ),
-        body: GridView.count(
-          padding: const EdgeInsets.all(25),
-          crossAxisCount: 2,
-          children: <Widget>[
-            Card(
-              margin: const EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const KategoriUi()),
-                  );
-                },
-                splashColor: Colors.blue,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Image.asset(
-                        'assets/logo_kategori.png',
-                        width: 100,
-                        height: 100,
-                      ),
-                      const Text(
-                        "Kategori",
-                        style: TextStyle(fontSize: 17.0),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+        backgroundColor: MyColor.bgColor,
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
+          final cardWidth = constraints.maxWidth / crossAxisCount;
+          final cardHeight = cardWidth * 0.8;
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(25),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              childAspectRatio: cardWidth / cardHeight,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
             ),
-            Card(
-              margin: const EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const StokProdukUi()),
-                  );
-                },
-                splashColor: Colors.blue,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Image.asset(
-                        'assets/logo_cek_produk.png',
-                        width: 100,
-                        height: 100,
-                      ),
-                      const Text(
-                        "Stok Produk",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 17.0),
-                      )
-                    ],
-                  ),
-                ),
+            itemCount: 4, // Update item count based on the number of cards
+            itemBuilder: (context, index) {
+              return _buildGridCard(context, index, cardWidth, cardHeight);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildGridCard(
+      BuildContext context, int index, double width, double height) {
+    final icons = [
+      'assets/logo_kategori.png',
+      'assets/logo_cek_produk.png',
+      'assets/logo_pemesanan.png',
+      'assets/logo_penjualan.png',
+    ];
+    final titles = [
+      'Kategori',
+      'Stok Produk',
+      'Pemesanan',
+      'Penjualan',
+    ];
+    final routes = [
+      const KategoriUi(),
+      const StokProdukUi(),
+      null,
+      null,
+    ];
+
+    return Card(
+      margin: const EdgeInsets.all(8),
+      child: InkWell(
+        onTap: () {
+          if (routes[index] != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => routes[index]!),
+            );
+          }
+        },
+        splashColor: Colors.blue,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Image.asset(
+                icons[index],
+                width: width * 0.4,
+                height: height * 0.4,
               ),
-            ),
-            Card(
-              margin: const EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                splashColor: Colors.blue,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Image.asset(
-                        'assets/logo_pemesanan.png',
-                        width: 100,
-                        height: 100,
-                      ),
-                      const Text(
-                        "Pemesanan",
-                        style: TextStyle(fontSize: 17.0),
-                      )
-                    ],
-                  ),
-                ),
+              const SizedBox(height: 10),
+              Text(
+                titles[index],
+                style: const TextStyle(fontSize: 17.0),
+                textAlign: TextAlign.center,
               ),
-            ),
-            Card(
-              margin: const EdgeInsets.all(8),
-              child: InkWell(
-                onTap: () {},
-                splashColor: Colors.blue,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Image.asset(
-                        'assets/logo_penjualan.png',
-                        width: 100,
-                        height: 100,
-                      ),
-                      const Text(
-                        "Penjualan",
-                        style: TextStyle(fontSize: 17.0),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ],
-        ));
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -18,7 +18,7 @@ class _NavbarOwnerState extends State<NavbarOwner> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     HomeUi(),
-    LikeUi(),
+    RiwayatUi(),
     SearchUi(),
     SettingsUi()
   ];
